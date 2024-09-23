@@ -1,0 +1,5 @@
+# compiled output
+/dist
+
+# nodejs
+/node_modules
