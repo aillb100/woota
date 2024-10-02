@@ -1,3 +1,5 @@
+import { IBookItem, INewsItem } from "./data.interface";
+
 type TAlertData = {
     show: boolean;
     title: string;
@@ -5,6 +7,13 @@ type TAlertData = {
     callback?: Function;
 };
 
+type TPopData = {
+    show: boolean;
+    type: string;
+    data: INewsItem | IBookItem
+};
+
 export {
-    TAlertData
+    TAlertData,
+    TPopData
 };

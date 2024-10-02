@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { AlertDialog } from "../component/dialog.component";
-import { useRecoilState } from "recoil";
-import { TAlertData } from "../type/data.type";
-import { stateAlertData } from "../component/atom.component";
+import { AlertDialog, PopupDialog } from "../component/dialog.component";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { TAlertData, TPopData } from "../type/data.type";
+import { stateAlertData, statePopData } from "../component/atom.component";
 import { IRespData } from "../type/http.interface";
 import { http } from "../tools/http.tools";
 import { IAPIData, INewsItem, IBookItem } from "../type/data.interface";
@@ -14,6 +14,7 @@ const List = () => {
     const [alertData, showAlert] = useRecoilState<TAlertData>(stateAlertData);
     const [keyword, setKeyword] = useState<string>('');
     const [apiData, setApiData] = useState<IAPIData | null>(null);
+    const popData: TPopData = useRecoilValue<TPopData>(statePopData);
 
     const clickTab = (e: React.MouseEvent<HTMLDivElement>) => {
         const tabDiv = e.target as HTMLDivElement;
@@ -57,8 +58,17 @@ const List = () => {
         const title: string = su.unescape(su.stripTag(item.title));
         const desc: string = su.unescape(su.stripTag(item.description));
         const pubDate: string = moment(item.pubDate).format('YYYY-MM-DD HH:mm');
+        const showPopup = useSetRecoilState<TPopData>(statePopData);
 
-        return <li className="newsRow">
+        const clickNews = () => {
+            showPopup({
+                show: true,
+                type: 'news',
+                data: item
+            });
+        };
+
+        return <li className="newsRow" onClick={ clickNews }>
             <span className="title ellipsis">{ title }</span>
             <span className="date">{ pubDate }</span>
             <span className="desc ellipsis">{ desc }</span>
@@ -70,12 +80,21 @@ const List = () => {
         const author: string = item.author;
         const desc: string = su.unescape(su.stripTag(item.description));
         const image: string = item.image;
+        const showPopup = useSetRecoilState<TPopData>(statePopData);
+
+        const clickBook = () => {
+            showPopup({
+                show: true,
+                type: 'book',
+                data: item
+            });
+        };
 
         return <li className="bookRow">
             <div className="imageDiv">
                 <img src={ image } alt={ title } />
             </div>
-            <div className="infoDiv">
+            <div className="infoDiv" onClick={ clickBook }>
                 <span className="title ellipsis">{ title }</span>
                 <span className="author">{ author }</span>
                 <span className="desc ellipsis">{ desc }</span>
@@ -134,6 +153,9 @@ const List = () => {
             </div>
             {
                 alertData && alertData.show && <AlertDialog />
+            }
+            {
+                popData && popData.show && <PopupDialog />
             }
         </>
     )

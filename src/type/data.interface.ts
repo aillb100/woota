@@ -26,8 +26,19 @@ interface IBookItem {
     title: string;
 };
 
+interface IDetail {
+    header: string;
+    attach: string;
+    body: string;
+    link: string;
+    image?: string;
+    publisher?: string;
+    discount?: number;
+};
+
 export {
     IAPIData,
     INewsItem,
-    IBookItem
+    IBookItem,
+    IDetail
 };
